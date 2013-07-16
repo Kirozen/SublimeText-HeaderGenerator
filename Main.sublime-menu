@@ -35,13 +35,13 @@
                         [
                             {
                                 "command": "open_file",
-                                "args": {"file": "${packages}/Header Generator/README.md"},
+                                "args": {"file": "${packages}/SublimeText-HeaderGenerator/README.md"},
                                 "caption": "README"
                             },
                             { "caption": "-" },
                             {
                                 "command": "open_file",
-                                "args": {"file": "${packages}/Header Generator/HeaderGenerator.sublime-settings"},
+                                "args": {"file": "${packages}/SublimeText-HeaderGenerator/HeaderGenerator.sublime-settings"},
                                 "caption": "Settings – Default"
                             },
                             {
@@ -53,7 +53,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/Header Generator/Default (OSX).sublime-keymap",
+                                    "file": "${packages}/SublimeText-HeaderGenerator/Default (OSX).sublime-keymap",
                                     "platform": "OSX"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -61,7 +61,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/Header Generator/Default (Linux).sublime-keymap",
+                                    "file": "${packages}/SublimeText-HeaderGenerator/Default (Linux).sublime-keymap",
                                     "platform": "Linux"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -69,7 +69,7 @@
                             {
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/Header Generator/Default (Windows).sublime-keymap",
+                                    "file": "${packages}/SublimeText-HeaderGenerator/Default (Windows).sublime-keymap",
                                     "platform": "Windows"
                                 },
                                 "caption": "Key Bindings – Default"

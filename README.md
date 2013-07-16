@@ -13,3 +13,7 @@ Features :
 - Date
 - Email
 - File name
+
+History :
+* v1.1
+Fix Main.sublime-menu
