@@ -1,0 +1,20 @@
+[
+    {
+        "id": "selection",
+        "caption": "Selection",
+        "children":
+        [
+            {
+                "id": "headergenerator",
+                "caption": "Header Generator",
+                "children":
+                [
+                    {
+                        "caption": "Generate an header",
+                        "command": "generate"
+                    }
+                ]
+            }
+        ]
+    }
+]
