@@ -1,6 +1,6 @@
 [
     {
         "caption": "Generate an header",
-        "command": "generate"
+        "command": "generate_header"
     }
 ]

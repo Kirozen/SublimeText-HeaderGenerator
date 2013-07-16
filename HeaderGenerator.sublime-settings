@@ -1,0 +1,11 @@
+/*
+    Header generator default settings
+*/
+{
+    "author" : "John Doe",
+    "email" : "john.doe@nowhere.com",
+    "date_format" : "%Y-%m-%d",
+    "print_email" : true,
+    "print_date" : true,
+    "print_filename" : true
+}
