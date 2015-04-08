@@ -17,3 +17,5 @@ Features :
 History :
 * v1.1
 Fix Main.sublime-menu
+* v1.2
+Add C/C++ extensions

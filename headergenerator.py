@@ -2,18 +2,20 @@
 
 __author__ = "Etienne Faisant"
 __date__ = "2013-07-16"
+__version__ = "1.2"
 
 import sublime
 import sublime_plugin
 from datetime import datetime
 import os
 
-C_CPP_EXT = [".c", ".cc", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".inl"]
+C_CPP_EXT = [".c", ".cc", ".cpp", ".cxx", ".c++", ".h", ".hpp", ".hxx", ".h++", ".inl", ".ipp", ".inc"]
 PY_EXT = [".py"]
 JAVA_EXT = [".java"]
 
 
 class GenerateHeaderCommand(sublime_plugin.TextCommand):
+
     """Generate an header"""
 
     def run(self, edit):
