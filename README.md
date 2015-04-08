@@ -13,6 +13,8 @@ Features :
 - Date
 - Email
 - File name
+- Revision
+- Comments
 
 History :
 * v1.1
@@ -21,3 +23,5 @@ Fix Main.sublime-menu
 Add C/C++ extensions
 * v1.3
 Add Python extensions
+* v2.0
+Add revision/comment feature
