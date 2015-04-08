@@ -2,7 +2,7 @@
 
 __author__ = "Etienne Faisant"
 __date__ = "2013-07-16"
-__version__ = "1.2"
+__version__ = "1.3"
 
 import sublime
 import sublime_plugin
@@ -10,7 +10,7 @@ from datetime import datetime
 import os
 
 C_CPP_EXT = [".c", ".cc", ".cpp", ".cxx", ".c++", ".h", ".hpp", ".hxx", ".h++", ".inl", ".ipp", ".inc"]
-PY_EXT = [".py"]
+PY_EXT = [".py", ".py3", ".pyw"]
 JAVA_EXT = [".java"]
 
 
