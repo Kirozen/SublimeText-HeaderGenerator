@@ -20,28 +20,29 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         self.load_settings()
+        self.edit = edit
+        self.window = sublime.active_window()
         self.view.sel().clear()
-        pt = self.view.text_point(0, 0)
-        self.view.sel().add(sublime.Region(pt))
-        self.view.show(pt)
+        self.point = self.view.text_point(0, 0)
+        self.region = sublime.Region(self.point)
+        self.view.sel().add(self.region)
+        self.view.show(self.point)
         filename = self.view.file_name()
         if filename:
             extension = os.path.splitext(filename)[1]
             if extension:
                 if extension in C_CPP_EXT:
-                    header_str = self.c_cpp_generate(os.path.basename(filename))
+                    self.c_cpp_generate(os.path.basename(filename))
                 elif extension in PY_EXT:
-                    header_str = self.py_generate(os.path.basename(filename))
+                    self.py_generate(os.path.basename(filename))
                 elif extension in JAVA_EXT:
-                    header_str = self.java_generate(os.path.basename(filename))
+                    self.java_generate(os.path.basename(filename))
                 else:
                     sublime.status_message("Extension not supported")
             else:
                 sublime.status_message("Extension not found")
         else:
             sublime.status_message("Filename does not exist")
-        if header_str:
-            self.view.insert(edit, pt, header_str)
 
     def load_settings(self):
         settings_name = 'HeaderGenerator'
@@ -57,57 +58,50 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
         self.print_filename = settings.get("print_filename")
         self.allow_rev = settings.get("allow_rev")
 
-    def set_comment(self, text):
-        self.comment = text
-
     def py_generate(self, filename):
-        if not self.py_detect(filename):
-            ret = self.py_first_time(filename)
+        index = self.py_detect(filename)
+        if index < 0:
+            self.py_first_time(filename)
             sublime.status_message("Python header generated")
         else:
             if self.allow_rev:
-                ret = self.py_write_rev(filename)
+                self.py_write_rev(filename, index)
                 sublime.status_message("Python header revision generated")
-        return ret
 
     def py_first_time(self, filename):
         retstr = ""
-
         if self.print_filename:
             retstr += "\"\"\" " + filename + " \"\"\"" + "\n\n"
-
         retstr += "__author__ = " + "\"" + self.author + "\"" + "\n"
-
         if self.print_email:
             retstr += "__email__ = " + "\"" + self.email + "\"" + "\n"
-
         if self.print_date:
             retstr += "__date__ = " + "\"" + self.date + "\"" + "\n"
-
         retstr += "\n"
-        return retstr
+        self.view.insert(self.edit, self.point, retstr)
 
-    def py_write_rev(self, filename):
-        self.comment = ""
-        self.window.show_input_panel("Comment:", "", self.set_comment, None, None)
-        retstr = "##########\n"
-        retstr += "# " + self.date + "\n"
-        retstr += "#\n"
-        if self.comment:
-            retstr += "# " + self.comment + "\n"
+    def py_write_rev(self, filename, line):
+        def with_comment(comment, filename=filename, line=line):
+            retstr = "##########\n"
+            retstr += "# " + self.date + "\n"
             retstr += "#\n"
-        retstr += "\n"
-        return retstr
+            if comment:
+                retstr += "# " + comment + "\n"
+                retstr += "#\n"
+            self.view.run_command("goto_line", {"line": line})
+            self.view.run_command("insert", {"characters": retstr})
+
+        self.window.show_input_panel("Comment:", "", with_comment, None, None)
 
     def c_cpp_generate(self, filename):
-        if not self.c_cpp_detect(filename):
-            ret = self.c_cpp_first_time(filename)
+        index = self.c_cpp_detect(filename)
+        if index < 0:
+            self.c_cpp_first_time(filename)
             sublime.status_message("C/C++ header generated")
         else:
             if self.allow_rev:
-                ret = self.c_cpp_write_rev(filename)
+                self.c_cpp_write_rev(filename, index)
                 sublime.status_message("C/C++ header revision generated")
-        return ret
 
     def c_cpp_first_time(self, filename):
         retstr = "/**\n"
@@ -120,30 +114,31 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
         if self.print_date:
             retstr += " * " + "  Date : " + self.date + "\n"
         retstr += " */\n\n"
-        return retstr
+        self.view.insert(self.edit, self.point, retstr)
 
-    def c_cpp_write_rev(self, filename):
-        self.comment = ""
-        self.window.show_input_panel("Comment:", "", self.set_comment, None, None)
-        retstr = "/*********\n"
-        retstr += " * " + self.date + "\n"
-        retstr += " *\n"
-        if self.comment:
-            retstr += " * " + self.comment + "\n"
+    def c_cpp_write_rev(self, filename, line):
+        def with_comment(comment, filename=filename, line=line):
+            retstr = "/*********\n"
+            retstr += " * " + self.date + "\n"
             retstr += " *\n"
-        retstr += " */\n"
-        retstr += "\n"
-        return retstr
+            if comment:
+                retstr += " * " + comment + "\n"
+                retstr += " *\n"
+            retstr += " */\n"
+            self.view.run_command("goto_line", {"line": line})
+            self.view.run_command("insert", {"characters": retstr})
+
+        self.window.show_input_panel("Comment:", "", with_comment, None, None)
 
     def java_generate(self, filename):
-        if not self.java_detect(filename):
-            ret = self.java_first_time(filename)
+        index = self.java_detect(filename)
+        if index < 0:
+            self.java_first_time(filename)
             sublime.status_message("Java header generated")
         else:
             if self.allow_rev:
-                ret = self.java_write_rev(filename)
+                self.java_write_rev(filename, index)
                 sublime.status_message("Java header revision generated")
-        return ret
 
     def java_first_time(self, filename):
         retstr = "/**\n"
@@ -155,24 +150,50 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
             retstr += " * " + " Email : " + self.email + "\n"
         if self.print_date:
             retstr += " * " + "  Date : " + self.date + "\n"
-        retstr += " */\n\n"
-        return retstr
-
-    def java_write_rev(self, filename):
-        self.comment = ""
-        self.window.show_input_panel("Comment:", "", self.set_comment, None, None)
-        retstr = "/*********\n"
-        retstr += " * " + self.date + "\n"
-        retstr += " *\n"
-        if self.comment:
-            retstr += " * " + self.comment + "\n"
-            retstr += " *\n"
         retstr += " */\n"
-        retstr += "\n"
-        return retstr
+        self.view.insert(self.edit, self.point, retstr)
+
+    def java_write_rev(self, filename, line):
+        def with_comment(comment, filename=filename, line=line):
+            retstr = "/*********\n"
+            retstr += " * " + self.date + "\n"
+            retstr += " *\n"
+            if comment:
+                retstr += " * " + comment + "\n"
+                retstr += " *\n"
+            retstr += " */\n"
+            self.view.run_command("goto_line", {"line": line})
+            self.view.run_command("insert", {"characters": retstr})
+
+        self.window.show_input_panel("Comment:", "", with_comment, None, None)
 
     def py_detect(self, filename):
-        return False
+        region = sublime.Region(0, self.view.size())
+        lines = self.view.substr(region).split('\n')
+        header = "\"\"\" %s \"\"\"" % filename
+
+        index = 0
+        while lines[index] and lines[index].isspace():
+            index += 1
+
+        if index >= len(lines):
+            return -1
+
+        if lines[index] == header or lines[index].startswith('__author__') or lines[index].startswith('date'):
+            while index < len(lines):
+                if lines[index].startswith('import'):
+                    break
+                index += 1
+
+            index -= 1
+            while index >= 0:
+                if lines[index] and not lines[index].isspace():
+                    index += 1
+                    break
+                index -= 1
+        else:
+            return -1
+        return index + 1
 
     def c_cpp_detect(self, filename):
         return False
