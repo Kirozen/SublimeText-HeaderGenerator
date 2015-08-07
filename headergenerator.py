@@ -119,12 +119,11 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
     def c_cpp_write_rev(self, filename, line):
         def with_comment(comment, filename=filename, line=line):
             retstr = "/*********\n"
-            retstr += " * " + self.date + "\n"
-            retstr += " *\n"
+            retstr += " * " + self.date + "\n*\n"
             if comment:
-                retstr += " * " + comment + "\n"
-                retstr += " *\n"
-            retstr += " */\n"
+                retstr += "* " + comment + "\n"
+                retstr += "*\n"
+            retstr += "*/\n"
             self.view.run_command("goto_line", {"line": line})
             self.view.run_command("insert", {"characters": retstr})
 
@@ -157,11 +156,11 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
         def with_comment(comment, filename=filename, line=line):
             retstr = "/*********\n"
             retstr += " * " + self.date + "\n"
-            retstr += " *\n"
+            retstr += "*\n"
             if comment:
-                retstr += " * " + comment + "\n"
-                retstr += " *\n"
-            retstr += " */\n"
+                retstr += "* " + comment + "\n"
+                retstr += "*\n"
+            retstr += "*/\n"
             self.view.run_command("goto_line", {"line": line})
             self.view.run_command("insert", {"characters": retstr})
 
@@ -196,7 +195,15 @@ class GenerateHeaderCommand(sublime_plugin.TextCommand):
         return index + 1
 
     def c_cpp_detect(self, filename):
-        return False
+        region = sublime.Region(0, self.view.size())
+        lines = self.view.substr(region).split('\n')
+        index = 0
+        while lines[index] and not lines[index].startswith("#include"):
+            if lines[index].startswith(" */"):
+                return index + 2
+            index += 1
+
+        return -1
 
     def java_detect(self, filename):
-        return False
+        return -1
