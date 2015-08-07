@@ -2,7 +2,7 @@
 
 __author__ = "Etienne Faisant"
 __date__ = "2013-07-16"
-__version__ = "2.0"
+__version__ = "2.1"
 
 import sublime
 import sublime_plugin

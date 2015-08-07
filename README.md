@@ -25,3 +25,5 @@ Add C/C++ extensions
 Add Python extensions
 * v2.0
 Add revision/comment feature
+* v2.1
+C++ comment feature : ok
